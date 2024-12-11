@@ -1,3 +1,11 @@
+# Python virtual environnment
 venv/
+
+# Auto generated folders
 __pycache__/
+
+
+# Auto enerated files
+dataset/dataset.csv
+generated.c
 core
