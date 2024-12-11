@@ -34,6 +34,7 @@ class ExpressionGenerator(Generator):
         self.result = []
 
         # A dictionnary of boolean expressions and their corresponding truth tables.
+        # A bitwise expression En with n variables has 2^(2^n) different reduced Boolean expression
         self.exprs = {
             "x": [0, 0, 1, 1], "y": [0, 1, 0, 1], "-1": [1, 1, 1, 1], "~x": [1, 1, 0, 0], "~y": [1, 0, 1, 0],
             "x&y": [0, 0, 0, 1], "~x&y": [0, 1, 0, 0], "x&~y": [0, 0, 1, 0], "~(x&y)": [1, 1, 1, 0],
@@ -246,6 +247,11 @@ class CSVToCGenerator(Generator):
         except Exception as e:
             print(f"Error: {e}")
 
+# References:
+#      - https://aclanthology.org/2020.findings-emnlp.56.pdf
+#      - https://link.springer.com/chapter/10.1007/978-3-540-77535-5_5
+#
+# This script is a fork of the NeoReduce paper
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Generate MBA dataset")
     parser.add_argument("--numOfTerms", type=int, default=5, help="Number of terms")
