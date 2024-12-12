@@ -1,5 +1,6 @@
 import os
 import csv
+import random
 import argparse
 import pandas as pd
 
@@ -203,14 +204,20 @@ class CSVToCGenerator(Generator):
                 
                 expression_index = header.index('Obfuscated')
 
+                rows = list(reader)  # Read all rows into memory
+                if len(rows) < 5:
+                    raise ValueError("CSV must contain at least 5 rows.")
+
+                selected_rows = random.sample(rows, 5)  # Select 5 random rows
+
                 c_code = ["#include <stdio.h>", "", "int main() {"]
 
-                # ToDo : get variables and loop over it
+                # Add variable declarations
                 c_code.append(f"    int x = 0;")
                 c_code.append(f"    int y = 0;")
                 c_code.append("")
 
-                for i, row in enumerate(reader):
+                for i, row in enumerate(selected_rows):
                     expression = row[expression_index]
                     c_code.append(f"    // Expression {i + 1}")
                     c_code.append(f"    int result_{i + 1} = {expression};")

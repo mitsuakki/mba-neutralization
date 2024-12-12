@@ -17,6 +17,7 @@ dataset_to_c:
 
 clean:
 	rm -rf $(VENV_DIR)
+	rm -rf bin/*
 	rm -f dataset/dataset.csv bin/generated.c
 
 .PHONY: all setup generate dataset_to_c clean
