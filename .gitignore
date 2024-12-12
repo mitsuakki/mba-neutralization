@@ -1,5 +1,5 @@
 # Python virtual environnment
-venv/
+.venv/
 
 # Auto generated folders
 __pycache__/

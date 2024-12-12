@@ -62,69 +62,50 @@ class ExpressionGenerator(Generator):
         """
         Generate an MBA expression using a combination of expression indexes and corresponding coefficients.
         """
-        
-        left: str = ""
-        right: str = ""
-        i: int = 0
 
-        for j in indexOfExprs:
-            sign = True
-            keys = list(self.exprs.keys())
-            coeff = keys[j] if j < len(keys) else -1
-            
-            # coefficient generation
+        def construct_expression(coeff, sign, left, right):
+            if left:
+                left += "+" + coeff if sign else "-" + coeff
+            else:
+                left = coeff if sign else "-" + coeff
+            return left, right
+
+        def ensure_variable_inclusion(left, right, var):
+            if (var not in left) and (var not in right):
+                left += "+" + var
+                right += "+" + var
+            return left, right
+
+        left, right = "", ""
+        keys = list(self.exprs.keys())
+
+        for i, j in enumerate(indexOfExprs):
+            coeff = keys[j] if j < len(keys) else "-1"
+            sign = (v[i] >= 0)
+
             if len(coeff) > 1:
-                coeff = "(" + coeff + ")"
-            
+                coeff = f"({coeff})"
+
             if coeff == "-1":
-                if v[i] > 0:
-                    sign = False
-                    coeff = str(v[i])
-                else:
-                    sign = True
-                    coeff = str(-v[i])
-            elif v[i] > 0:
-                sign = True
-                if v[i] > 1:
-                    coeff = str(v[i]) + "*" + coeff
+                coeff = str(abs(v[i]))
+            elif abs(v[i]) > 1:
+                coeff = f"{abs(v[i])}*{coeff}"
+
+            if j < 2 or not left:
+                left, right = construct_expression(coeff, sign, left, right)
             else:
-                sign = False
-                if v[i] < -1:
-                    coeff = str(-v[i]) + "*" + coeff
-            
-            # Construct the left and right expressions
-            if (j < 2) or (not left):
-                if left:
-                    left += "+" + coeff if sign else "-" + coeff
-                else:
-                    left = coeff if sign else "-" + coeff
-            else:
-                if right:
-                    right += "-" + coeff if sign else "+" + coeff
-                else:
-                    right = "-" + coeff if sign else coeff
-            
-            i += 1
+                right, left = construct_expression(coeff, not sign, right, left)
 
         # Ensure that x and y variables are included in both sides of the expression
-        if ("x" not in left) and ("x" not in right):
-            left += "+x"
-            right += "+x"
-        
-        if ("y" not in left) and ("y" not in right):
-            left += "+y"
-            right += "+y"
-        
+        left, right = ensure_variable_inclusion(left, right, "x")
+        left, right = ensure_variable_inclusion(left, right, "y")
         if self.nVars > 2:
-            if ("z" not in left) and ("z" not in right):
-                left += "+z"
-                right += "+z"
-        
+            left, right = ensure_variable_inclusion(left, right, "z")
+
         # Clean up unnecessary parentheses
         # Even if we can keep them to make the MBA more hard to read
-        if ("+" not in left) and ("-" not in left) and ("*" not in left):
-            if left[0] == "(" and left[len(left) - 1] == ")":
-                left = left[1:len(left) - 1]
+        if ("+" not in left) and ("-" not in left) and ("*" not in left) and left.startswith("(") and left.endswith(")"):
+            left = left[1:-1]
 
         self.result.append([left, right])
 
@@ -157,20 +138,20 @@ class ExpressionGenerator(Generator):
         while idx != -1:
             if len(solutions) < 2:
                 return zeros(v.shape[0], v.shape[1])
-            
-            # Add non-zero value of nullspace to v
-            hasNonZeroNullSpace = False
-            for s in solutions:
-                if s[idx] != 0:
-                    hasNonZeroNullSpace = True
-                    v += s
-                    break
 
-            if hasNonZeroNullSpace == False:
+            has_non_zero_null_space = any(s[idx] != 0 for s in solutions)
+            if not has_non_zero_null_space:
                 return zeros(v.shape[0], v.shape[1])
 
+            # Add non-zero value of nullspace to v
+            for s in solutions:
+                if s[idx] != 0:
+                    v += s
+                    break
+            
             # Try to eliminate the next 0 in v
             idx = self.first_zero_index(v)
+
         return v
 
     def generate(self):
@@ -280,11 +261,11 @@ if __name__ == "__main__":
         else:
             print(f"{datasetPath} already exist.")
 
-        generatedCPath = "./generated.c"
-        if not os.path.exists(generatedCPath):
-            generator = CSVToCGenerator(csvFile=datasetPath, output=generatedCPath)
-            generator.generate()
-        else:
-            print(f"{generatedCPath} already exist.")
+        # generatedCPath = "./generated.c"
+        # if not os.path.exists(generatedCPath):
+        #     generator = CSVToCGenerator(csvFile=datasetPath, output=generatedCPath)
+        #     generator.generate()
+        # else:
+        #     print(f"{generatedCPath} already exist.")
     else:
         print("At least 2 variables are required to generate meaningful MBA expressions.")
