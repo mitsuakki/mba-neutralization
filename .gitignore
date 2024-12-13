@@ -5,8 +5,15 @@
 __pycache__/
 dataset/__pycache__/
 
-
 # Auto enerated files
 dataset/dataset.csv
 generated.c
 core
+
+# IDA files
+*.i64
+*.id0
+*.id1
+*.id2
+*.nam
+*.til
