@@ -13,7 +13,7 @@ generate:
 	$(ACTIVATE) && $(PYTHON) dataset/generator.py --numOfTerms 5 --numOfVars 2
 
 dataset_to_c:
-	$(ACTIVATE) && $(PYTHON) -c "from dataset.generator import CSVToCGenerator; CSVToCGenerator('dataset/dataset.csv', 'bin/generated.c').generate()"
+	$(ACTIVATE) && $(PYTHON) -c "from dataset.generator import CSVToCGenerator; CSVToCGenerator('resources/dataset/dataset.csv', 'bin/generated.c').generate()"
 
 clean:
 	rm -rf $(VENV_DIR)

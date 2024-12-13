@@ -248,7 +248,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.numOfVars >= 2:
-        datasetPath = "./dataset/dataset.csv"
+        datasetPath = "./resources/dataset/dataset.csv"
         if not os.path.exists(datasetPath):
             generator = ExpressionGenerator(nVars=args.numOfVars, nTerms=args.numOfTerms)
             generator.generate()
