@@ -1,0 +1,19 @@
+{
+    "pluginmetadataversion": 2,
+    "name": "eshard",
+    "author": "Alexis Daugé",
+    "type": ["core"],
+    "api": "python3",
+    "description": "",
+    "longdescription": "",
+    "license": {
+        "name": "",
+        "text": ""
+    },
+    "platforms": ["Linux"],
+    "installinstructions": {
+        "Linux": ""
+    },
+    "version": "alpha",
+    "minimumbinaryninjaversion": 1
+}
