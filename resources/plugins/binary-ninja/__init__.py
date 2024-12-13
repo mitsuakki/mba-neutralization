@@ -60,13 +60,13 @@ def simplify_expression(il: LowLevelILInstruction):
                 right_left.operation == LowLevelILOperation.LLIL_CONST and right_left.constant == 0xFFFFFFFF and
                 right_right.operation == LowLevelILOperation.LLIL_CONST and right_right.constant == 0xFFFFFFFF):
                 
-                simplified_value = (((((((((left_left.constant & (~right_right.constant)) + 
-                                         (left_left.constant * 0xFFFFFFFF)) + 
-                                        ((~right_right.constant) * 0xFFFFFFFF)) + 
-                                       (left_left.constant | (~right_right.constant))) + 
-                                      0x7FFFFFFF) * 0x991F340F) + 
-                                    0x62250C86) * 0xC5BD3AEF) - 
-                                   0x625B0D1A)
+                # simplified_value = (((((((((left_left.constant & (~right_right.constant)) + 
+                #                          (left_left.constant * 0xFFFFFFFF)) + 
+                #                         ((~right_right.constant) * 0xFFFFFFFF)) + 
+                #                        (left_left.constant | (~right_right.constant))) + 
+                #                       0x7FFFFFFF) * 0x991F340F) + 
+                #                     0x62250C86) * 0xC5BD3AEF) - 
+                #                    0x625B0D1A)
                 
                 il.operation = LowLevelILOperation.LLIL_CONST
                 il.constant = simplified_value
